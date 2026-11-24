@@ -8,11 +8,23 @@ fn get_resource_pack(path: &Path) -> String {
     let reader = BufReader::new(file);
 
     for line in reader.lines().flatten() {
-        if line.starts_with("resourcePacks:") {
-            return line;
+        if let Some(raw) = line.strip_prefix("resourcePacks:") {
+            let cleaned = raw
+                .trim()
+                .trim_start_matches('[')
+                .trim_end_matches(']')
+                .trim_matches('"');
+
+            return cleaned.to_string();
         }
     }
 
+//  for line in reader.lines().flatten() {
+//      if line.starts_with("resourcePacks:") {
+//          return line;
+//      }
+//  }
+    
     String::from("Default")
 }
 
